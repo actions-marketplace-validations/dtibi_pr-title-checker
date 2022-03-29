@@ -1,4 +1,4 @@
-name: "PR Title Checker"
+name: "LV PR Title Checker"
 description: "Checks if the PR Title follows contribution guidelines."
 branding:
   icon: "tag"
