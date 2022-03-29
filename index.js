@@ -29,6 +29,7 @@ async function run() {
     MESSAGES.success = MESSAGES.success || "All OK";
     MESSAGES.failure = MESSAGES.failure || "Failing CI test";
     MESSAGES.notice = MESSAGES.notice || "";
+    MESSAGES.comment = MESSAGES.comment || "Default Comment MSG";
 
     for (let i = 0; i < labels.length; i++) {
       for (let j = 0; j < CHECKS.ignoreLabels.length; j++) {
@@ -85,7 +86,8 @@ async function titleCheckFailed(CHECKS, LABEL, MESSAGES) {
     }
 
     await addLabel(LABEL.name);
-
+    await addComment(MESSAGES.comment)
+    
     if (CHECKS.alwaysPassCI) {
       core.info(MESSAGES.failure);
     } else {
@@ -110,6 +112,17 @@ async function addLabel(name) {
     labels: [name],
   });
   core.info(`Added label (${name}) to PR - ${addLabelResponse.status}`);
+}
+
+async function addComment(body) {
+  core.info(`Adding comment to PR...`);
+  let addCommentResponse = await octokit.issues.createComment({
+        issue_number: issue_number,
+        owner: owner,
+        repo: repo,
+        body: body,
+  });
+  core.info(`Added comment to PR - ${addCommentResponse.status}`);
 }
 
 async function removeLabel(labels, name) {
